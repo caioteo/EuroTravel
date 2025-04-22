@@ -6,7 +6,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+// 1) configura o CORS para **qualquer** origem (pode restringir apenas à sua LP se quiser)
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
 app.get("/rd-token", async (req, res) => {
@@ -25,6 +27,7 @@ app.get("/rd-token", async (req, res) => {
     if (!data.access_token) {
       return res.status(500).json({ error: "Falha ao gerar token", details: data });
     }
+    // 2) devolve o token com CORS liberado
     res.json({ access_token: data.access_token });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -32,4 +35,4 @@ app.get("/rd-token", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`RD‑Token server rodando na porta ${PORT}`));
+app.listen(PORT, () => console.log(`Token server rodando na porta ${PORT}`));
